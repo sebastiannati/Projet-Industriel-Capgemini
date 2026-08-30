@@ -85,7 +85,6 @@ def calculs_signes(list_points) :
 
         # Calcul de l'EBR
         ebr = np.sum(list_clignement)
-        print(list_clignement)
         list_ebr.append(ebr)
 
 #==========================================================================================================================================

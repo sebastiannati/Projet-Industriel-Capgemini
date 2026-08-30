@@ -1,4 +1,4 @@
-
+videos/*.mp4
+csv/*
 *.pyc
 .DS_Store
-
