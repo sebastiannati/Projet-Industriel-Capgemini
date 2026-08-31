@@ -94,7 +94,7 @@ def compute_signs_from_coordinates(coordinates_csv_path, sign_columns, nb_frames
             rows.append([video_name] + results)
 
     df = pd.DataFrame(rows, columns=columns)
-    df["classe"] = df["video_name"].str[4:7].map(CLASS_MAPPING)
+    df["class"] = df["video_name"].str[4:7].map(CLASS_MAPPING)
     return df
 
 
@@ -120,7 +120,8 @@ def display_diagnostics(df, sign_columns):
 
     print(f"{'=' * 60}")
     print("Class distribution:")
-    print(df["classe"].value_counts())
+    print(df["class"].value_counts())
+    
     print(f"{'=' * 60}")
 
 

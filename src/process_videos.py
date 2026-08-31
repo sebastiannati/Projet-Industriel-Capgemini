@@ -132,12 +132,17 @@ def extract_video_coordinates(video_path, detector, points_of_interest, target_f
     :return: tuple (video_name, values, video_unreadable)
         - video_name (str): video file name (without the folder)
         - values (list): extracted x, y, z coordinates, frame by frame
-        - video_unreadable (bool): True if reading the video failed partway through
+        - video_unreadable (bool): True if reading the video failed from the very beginning
     """
     video_name = os.path.basename(video_path)
     values = []
 
     cap = cv2.VideoCapture(video_path.strip())
+    
+    if not cap.isOpened():
+        cap.release()
+        return video_name, values, True
+
     actual_fps = cap.get(cv2.CAP_PROP_FPS)
     step = actual_fps / target_fps if actual_fps > 0 else 1
 
@@ -150,10 +155,13 @@ def extract_video_coordinates(video_path, detector, points_of_interest, target_f
         ret, frame = cap.read()
 
         if not ret:
-            video_unreadable = True
+            # Si on n'a absolument rien pu lire dès la première frame, c'est une vidéo illisible/corrompue
+            if frame_count == 0:
+                video_unreadable = True
+            # Sinon, c'est simplement la fin normale de la vidéo (courte), on s'arrête proprement
             break
 
-        if frames_kept == max_frames:
+        if frames_kept >= max_frames:
             break
 
         if frame_count >= next_frame_to_keep:
@@ -168,9 +176,6 @@ def extract_video_coordinates(video_path, detector, points_of_interest, target_f
                     values.append(point.x * frame_rgb.shape[1])
                     values.append(point.y * frame_rgb.shape[0])
                     values.append(point.z)
-            # If no face is detected on this frame, nothing is added:
-            # missing values are padded with zeros further down, as long as
-            # the proportion stays below NULL_RATIO_THRESHOLD.
 
             frames_kept += 1
             next_frame_to_keep += step
@@ -179,7 +184,6 @@ def extract_video_coordinates(video_path, detector, points_of_interest, target_f
 
     cap.release()
     return video_name, values, video_unreadable
-
 
 def log_unreadable_video(video_name):
     """Appends a video to the unreadable/discarded videos list (append only, never overwritten)."""
