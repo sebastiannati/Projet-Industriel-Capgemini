@@ -8,4 +8,4 @@ def distance(p1, p2):
     '''
     p1 = np.array(p1)
     p2 = np.array(p2)
-    return (((p1[:2] - p2[:2])**2).sum())**0.5
+    return np.linalg.norm(p1[:2] - p2[:2])

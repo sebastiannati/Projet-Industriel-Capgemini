@@ -33,6 +33,7 @@ list_ebr = []
 list_ferme = []
 list_clignement = []
 eyes_state = "open"
+
 # Les coordonnées de la frame
 coordonnees = []
 
@@ -131,13 +132,8 @@ while True:
             couleur = (255, 255, 0)  # Couleur du texte (blanc)
             cv2.putText(frame, texte, position, cv2.FONT_HERSHEY_SIMPLEX, taille_police, couleur, epaisseur)
             
-
-
-            
-
             # Afficher l'image avec le texte
             cv2.imshow('Affichage du texte', frame)
-
 
         # Attendre 1 milliseconde et vérifier si l'utilisateur a appuyé sur 'Esc', 'q', ou toute autre touche
         key = cv2.waitKey(1)
