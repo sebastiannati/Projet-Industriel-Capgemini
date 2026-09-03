@@ -35,5 +35,7 @@ Les modèles entraînés sont dans le dossier *modele_ml*
 
 2. au moment de la realisation du projet nous n'avions pas eu de cours de Machine Learning nous permettant de comprendre les subtilitées des modèles et comment les utiliser au mieux ce qui nous a fait entrainer un RF sur 7000 features temporelles reliées entre elles
 
-3.
+3. data leakage, les videos pour les données on ete decoupé sur des videos de 10min ainsi on a plusieurs instances qui traduisent le comportement d'une seule personnes et donc quand on split le jeu en train/test on permet au model d'etre evalué sur des personnes deja vu a l'entrainement
+
+4. Optimisation Notebook not imported but tried Gridsearch and RandomSearch + CV to have the best model, in enhanced with the training model
 
