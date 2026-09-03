@@ -29,6 +29,11 @@ Pour utiliser le démonstrateur il suffit d'executer le fichier *demonstrateur.p
 Les modèles entraînés sont dans le dossier *modele_ml*
 
 
+## Limitations
 
+1. les données sont récoltées qu'a partir de video de personnes fixes devant la caméra et aucunement dans une situation concrete de conduite ou le coportement peut etre bien différent (parler, verifier les angles morts, les retroviseurs, passé les vitesses, tourner le volant)
 
+2. au moment de la realisation du projet nous n'avions pas eu de cours de Machine Learning nous permettant de comprendre les subtilitées des modèles et comment les utiliser au mieux ce qui nous a fait entrainer un RF sur 7000 features temporelles reliées entre elles
+
+3.
 
