@@ -10,6 +10,7 @@ debugpy==1.8.21
 executing==2.2.1
 flatbuffers==25.12.19
 fonttools==4.63.0
+hmmlearn==0.3.3
 ipykernel==7.3.0
 ipython==9.17.1
 ipython_pygments_lexers==1.1.1
