@@ -86,6 +86,8 @@ Les coordonnées extraites par `src/process_videos.py` sont sauvegardées dans `
 
 **EAR (Eye Aspect Ratio)** : mesure le niveau d'ouverture des yeux. Il est calculé séparément pour chaque œil (`EAR_left`, `EAR_right`), puis moyenné (`EAR_mean`). Une diminution de l'EAR traduit généralement une fermeture des yeux.
 
+<p align="center"><img src="graphics/signs_by_class_EAR_mean.png" width="600" alt="EAR moyen par classe KSS"></p>
+
 **MAR (Mouth Aspect Ratio)** : mesure le niveau d'ouverture de la bouche, ce qui permet notamment de détecter des épisodes pouvant correspondre à des bâillements.
 
 **HOP (Head Orientation Parameters)** : décrit l'orientation de la tête à partir des landmarks sélectionnés, via deux signaux : `HOP_gd` et `HOP_hb`. Ils permettent de capturer certaines variations de posture.
@@ -112,6 +114,8 @@ Vidéo A
 ```
 
 Le modèle pouvait donc retrouver, dans le jeu de test, des données provenant d'une personne déjà rencontrée pendant l'entraînement, sur une autre partie de la même vidéo. Les données d'entraînement et de test n'étaient alors pas réellement indépendantes, ce qui conduisait à une **estimation trop optimiste des performances** du modèle.
+
+<p align="center"><img src="graphics/confusion_matrix_RF_leaky.png" width="600" alt="Matrice de confusion du modèle initial (split leaky)"></p>
 
 ## 2.2 Une représentation temporelle mal adaptée
 
@@ -154,6 +158,8 @@ Dans la version initiale, l'ouverture ou la fermeture des yeux était détermin�
 
 J'ai donc remplacé ce seuil par un **Gaussian Hidden Markov Model (HMM)**, chargé d'apprendre automatiquement les différents états du signal. Plusieurs nombres d'états ont été testés, le choix étant guidé par : le **BIC (Bayesian Information Criterion)**, la dispersion de l'état correspondant à une fermeture importante, et la capacité du modèle à représenter les différents niveaux d'ouverture des yeux. Un modèle à 2 états (« ouvert » / « fermé ») s'est révélé insuffisant pour capturer les variations intermédiaires ; un modèle à **10 états** a finalement été retenu comme compromis.
 
+<p align="center"><img src="graphics/hmm_states_kss8-9_F_rldd_12-10.png" width="600" alt="États détectés par le HMM sur une instance"></p>
+
 Les états prédits par le HMM permettent ensuite de calculer des indicateurs comportementaux de façon plus fiable qu'avec le seuil adaptatif. J'ai notamment calculé : le **PERCLOS**, le nombre de clignements, la durée moyenne des fermetures, l'écart-type de la durée des fermetures, et le nombre de bâillements. Ces informations sont ensuite combinées aux features extraites par tsfresh :
 
 ```text
@@ -191,7 +197,12 @@ obtenue avec une validation croisée à 5 folds, un split groupé par vidéo, de
 Afin de comprendre pourquoi cette nouvelle approche, plus rigoureuse, obtenait des performances inférieures à celles (biaisées) du modèle initial, j'ai mené une analyse des erreurs :
 
 * **Matrice de confusion** : les principales erreurs concernent la classe intermédiaire (niveau 1), que le modèle a tendance à confondre avec les deux classes voisines.
+
+<p align="center"><img src="graphics/confusion_matrix_normalized_best_model.png" width="600" alt="Matrice de confusion du Random Forest enhanced"></p>
+
 * **Analyse LDA (Linear Discriminant Analysis)** : utilisée pour visualiser la séparabilité des classes dans l'espace des features, elle montre un chevauchement important entre les classes, particulièrement autour de la classe intermédiaire.
+
+<p align="center"><img src="graphics/lda_projection.png" width="600" alt="Projection LDA des classes KSS"></p>
 
 Ces observations suggèrent que les difficultés de classification ne proviennent pas uniquement du choix du Random Forest : une partie du plafond de performance semble provenir directement de la **séparabilité limitée des classes dans les données disponibles**.
 
